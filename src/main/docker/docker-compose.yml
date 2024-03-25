@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    ports:
+      - "5433:5432"  # Expose PostgreSQL port
+    environment:
+      POSTGRES_DB: sitis_db
+      POSTGRES_USER: sitis
+      POSTGRES_PASSWORD: sitis
+
+  spring-boot-app:
+    build:
+      context: .
+      dockerfile: src/main/docker/Dockerfile  # Path to your Dockerfile
+    container_name: spring-boot-app
+    ports:
+      - "8080:8080"  # Expose Spring Boot port
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/sitis_db
+      SPRING_DATASOURCE_USERNAME: sitis
+      SPRING_DATASOURCE_PASSWORD: sitis
